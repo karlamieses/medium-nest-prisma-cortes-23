@@ -63,9 +63,6 @@ jobs:
       - name: Debug application logs
         run: cat application.log
 
-      - name: Wait for application to be ready
-        run: npx wait-on http://localhost:3333
-
       - name: Run Cypress tests
         run: npx cypress run
         env:
