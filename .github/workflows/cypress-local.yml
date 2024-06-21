@@ -55,7 +55,7 @@ jobs:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/medium_clone
 
       - name: Start the application
-        run: yarn start &
+        run: yarn start:dev
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/medium_clone
 
