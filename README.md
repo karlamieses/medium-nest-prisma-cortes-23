@@ -83,21 +83,4 @@ Sadly, this repo was forked and for security purposes, GitHub does not allow rea
 
 ![alt text](image.png)
 
-
-📚 Documentation
-For more detailed documentation, please refer to:
-
-NestJS: NestJS Documentation
-Prisma: Prisma Documentation
-Cypress: Cypress Documentation
-GitHub Actions: GitHub Actions Documentation
-
-🎉 Contributing
-We welcome contributions! Please see the CONTRIBUTING.md file for guidelines on how to contribute.
-
-📄 License
-This project is licensed under the MIT License. See the LICENSE file for details.
-
-Thank you for your interest in the Medium Nest Prisma project! We hope this README provides a clear and comprehensive overview of the project's features, installation steps, and testing setup.
-
 Happy coding! 🚀
