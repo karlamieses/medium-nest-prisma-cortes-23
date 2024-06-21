@@ -26,12 +26,10 @@ jobs:
       - name: Cypress run (Prod)
         uses: cypress-io/github-action@v4
         with:
-          browser: chrome
-          run: npx cypress run
+          run: npx cypress run --config baseUrl=https://api.realworld.io/api
           record: true
-          parallel: true
         env:
           CYPRESS_RECORD_KEY: ${{ vars.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.CYPRESS_GITHUB_TOKEN }}
-          CYPRESS_BASE_URL: "https://api.realworld.io/api"
+          CYPRESS_BASE_URL: https://api.realworld.io/api 
           
