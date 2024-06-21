@@ -22,28 +22,34 @@ Clone the repository:
 ```
 git clone https://github.com/karlamieses/medium-nest-prisma-cortes-23.git
 cd medium-nest-prisma-cortes-23
-
+```
 
 Install dependencies:
+
 ```
 yarn install
 ```
 
 Start PostgreSQL in Docker:
+
 ```
 docker-compose up -d
 ```
 
 Run database migrations:
+
 ```
 yarn migrate:dev
 ```
 
 (Optional) Add seed data:
+
 ```
 yarn seed:dev
 ```
+
 Start the application:
+
 ```
 yarn start:dev
 ```
@@ -63,6 +69,7 @@ Run Cypress tests:
 ```
 npx cypress open
 ```
+
 This command opens the Cypress Test Runner, where you can run tests interactively.
 
 ### Running Cypress Tests in CI/CD
