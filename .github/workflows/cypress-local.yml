@@ -55,12 +55,13 @@ jobs:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/medium_clone
 
       - name: Start the application
-        run: yarn start:dev
+        run: |
+          nohup yarn start:dev &
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost:5432/medium_clone
 
       - name: Wait for application to be ready
-        run: npx wait-on http://localhost:3333
+        run: npx wait-on http://localhost:3333 --timeout 60000
 
       - name: Run Cypress tests
         run: npx cypress run
