@@ -1,23 +1,19 @@
-name: Cypress Tests - Prod
+name: Cypress Tests (Prod)
 
 on:
-  push:
+  pull_request:
+    types: [closed]
     branches:
       - main
 
 jobs:
   cypress-run:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-    environment: production  # Specify the environment to use
-
-    strategy:
-      fail-fast: false
-      matrix:
-        containers: [1, 2]
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -27,13 +23,13 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Cypress run in Prod
-        uses: cypress-io/github-action@v6
+      - name: Cypress run (Prod)
+        uses: cypress-io/github-action@v4
         with:
+          browser: chrome
+          run: npx cypress run
           record: true
           parallel: true
         env:
-          CYPRESS_RECORD_KEY: ${{ secrets.PRODUCTION.CYPRESS_RECORD_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CYPRESS_BASE_URL: https://api.realworld.io/api
-          CYPRESS_PREFIX: test-prod
+          CYPRESS_RECORD_KEY: ${{ vars.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.CYPRESS_GITHUB_TOKEN }}

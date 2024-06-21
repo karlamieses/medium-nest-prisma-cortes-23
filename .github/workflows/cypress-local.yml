@@ -4,9 +4,6 @@ on:
   pull_request:
     branches:
       - '*'  # Trigger on all branches for pull requests
-  push:
-    branches:
-      - '*'  # Trigger on all branches for pushes
 
 jobs:
   cypress-run:
@@ -29,10 +26,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '16'
 
@@ -63,10 +60,13 @@ jobs:
       - name: Debug application logs
         run: cat application.log
 
-      - name: Run Cypress tests
-        run: npx cypress run --record --key=${{ secrets.PRODUCTION.CYPRESS_RECORD_KEY }}
+      - name: Run Cypress (Local)
+        uses: cypress-io/github-action@v4
+        with:
+          record: true
+          parallel: true
         env:
+          CYPRESS_RECORD_KEY: ${{ vars.CYPRESS_RECORD_KEY }}
           CYPRESS_BASE_URL: http://localhost:3333
           CYPRESS_PREFIX: test-local
-          CYPRESS_RECORD_KEY: ${{ secrets.PRODUCTION.CYPRESS_RECORD_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.CYPRESS_GITHUB_TOKEN }}
