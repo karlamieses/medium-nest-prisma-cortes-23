@@ -61,8 +61,11 @@ jobs:
         run: cat application.log
 
       - name: Run Cypress (Local)
-        run: npx cypress run
-        record: true
+        uses: cypress-io/github-action@v4
+        with:
+          run: npx cypress run
+          record: true
+          parallel: true
         env:
           CYPRESS_BASE_URL: http://localhost:3333
           CYPRESS_PREFIX: test-local
