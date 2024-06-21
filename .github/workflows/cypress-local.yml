@@ -22,9 +22,9 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
           POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
+          --health-cmd "pg_isready -U ${{ secrets.POSTGRES_USER }}" 
+          --health-interval 10s 
+          --health-timeout 5s 
           --health-retries 5
 
     steps:
@@ -39,12 +39,10 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
-      - name: Start PostgreSQL container
-        run: docker-compose up -d
-
       - name: Wait for PostgreSQL to be ready
         run: |
-          until docker exec $(docker ps -q -f "name=medium-nest-prisma_db_1") pg_isready -U ${{ secrets.POSTGRES_USER }}; do
+          until docker exec $(docker ps -q -f "name=db") pg_isready -U ${{ secrets.POSTGRES_USER }}; do
+            echo "Waiting for PostgreSQL to be ready..."
             sleep 1
           done
 
