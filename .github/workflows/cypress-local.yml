@@ -63,7 +63,7 @@ jobs:
       - name: Debug application logs
         run: cat application.log
 
-      - name: Run Cypress tests
+      - name: Run Cypress (Local)
         run: npx cypress run --record --key=${{ secrets.PRODUCTION.CYPRESS_RECORD_KEY }}
         env:
           CYPRESS_BASE_URL: http://localhost:3333
