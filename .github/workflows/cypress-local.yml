@@ -3,8 +3,10 @@ name: Cypress Tests (Local)
 on:
   pull_request:
     branches:
-      - main
-      - develop
+      - '*'  # Trigger on all branches for pull requests
+  push:
+    branches:
+      - '*'  # Trigger on all branches for pushes
 
 jobs:
   cypress-run:
@@ -18,11 +20,11 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: mydatabase
+          POSTGRES_DB: medium_clone
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
+          --health-cmd "pg_isready -U postgres" 
+          --health-interval 10s 
+          --health-timeout 5s 
           --health-retries 5
 
     steps:
@@ -32,35 +34,39 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16' # Specify your Node.js version
+          node-version: '16'
 
       - name: Install dependencies
         run: yarn install
 
-      - name: Start PostgreSQL container
-        run: docker-compose up -d
+      - name: Copy .env.dev to .env
+        run: cp .env.dev .env
 
       - name: Wait for PostgreSQL to be ready
         run: |
-          until docker exec $(docker ps -q -f "name=medium-nest-prisma_db_1") pg_isready -U postgres; do
+          until pg_isready -h localhost -p 5432 -U postgres; do
+            echo "Waiting for PostgreSQL to be ready..."
             sleep 1
           done
 
       - name: Run database migrations
-        run: yarn migrate:dev
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/medium_clone
 
       - name: Start the application
-        run: yarn start &
+        run: |
+          nohup yarn start:dev > application.log 2>&1 &
         env:
-          DATABASE_URL: postgres://postgres:postgres@localhost:5432/mydatabase
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/medium_clone
 
-      - name: Wait for application to be ready
-        run: npx wait-on http://localhost:3333
+      - name: Debug application logs
+        run: cat application.log
 
       - name: Run Cypress tests
-        run: npx cypress run
+        run: npx cypress run --record --key=${{ secrets.CYPRESS_RECORD_KEY }}
         env:
           CYPRESS_BASE_URL: http://localhost:3333
           CYPRESS_PREFIX: test-local
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          GITHUB_TOKEN: ${{ secrets.CYPRESS_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

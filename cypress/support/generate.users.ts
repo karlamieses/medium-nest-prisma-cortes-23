@@ -1,6 +1,6 @@
 export function generateUniqueUser() {
     const timestamp = Date.now();
-    const prefix = Cypress.env('prefix');
+    const prefix = Cypress.env("prefix");
     
     return {
         username: `${prefix}${timestamp}`,

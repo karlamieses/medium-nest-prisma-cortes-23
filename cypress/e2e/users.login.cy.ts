@@ -1,7 +1,7 @@
 import { login, registerUser } from "../support/user.util";
 import { generateUniqueUser } from "../support/generate.users";
 
-describe("Test: validate user login", () => {
+describe("Test: validate user login. Test", () => {
 
   it("should validate a successfull login", () => {
     const user = generateUniqueUser()

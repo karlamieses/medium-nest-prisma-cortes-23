@@ -28,7 +28,7 @@ Cypress.Commands.add("getRequest", (endpoint: string, token?: string) => {
 Cypress.Commands.add("postRequest", (endpoint, body: any, token) => {
     return cy.request({
       method: "POST",
-      url: `${Cypress.env('baseUrl')}${endpoint}`,
+      url: `${Cypress.env("baseUrl")}${endpoint}`,
       body,
       failOnStatusCode: false,
       ...(token && { headers: { Authorization: `Token ${token}` } }),
