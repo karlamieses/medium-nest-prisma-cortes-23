@@ -52,12 +52,12 @@ jobs:
       - name: Run database migrations
         run: npx prisma migrate deploy
         env:
-          DATABASE_URL: postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/medium_clone
 
       - name: Start the application
         run: yarn start &
         env:
-          DATABASE_URL: postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/medium_clone
 
       - name: Wait for application to be ready
         run: npx wait-on http://localhost:3333
