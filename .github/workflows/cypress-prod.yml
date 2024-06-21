@@ -33,3 +33,5 @@ jobs:
         env:
           CYPRESS_RECORD_KEY: ${{ vars.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.CYPRESS_GITHUB_TOKEN }}
+          CYPRESS_BASE_URL: "https://api.realworld.io/api"
+          
