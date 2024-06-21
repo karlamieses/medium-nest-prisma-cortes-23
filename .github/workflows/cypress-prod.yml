@@ -31,5 +31,5 @@ jobs:
           record: true
           parallel: true
         env:
-          CYPRESS_RECORD_KEY: ${{ secrets.PRODUCTION.CYPRESS_RECORD_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CYPRESS_RECORD_KEY: ${{ vars.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.CYPRESS_GITHUB_TOKEN }}
