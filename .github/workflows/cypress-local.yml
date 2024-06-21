@@ -1,0 +1,66 @@
+name: Cypress Tests (Local)
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  cypress-run:
+    runs-on: ubuntu-latest
+
+    services:
+      db:
+        image: postgres:latest
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: mydatabase
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16' # Specify your Node.js version
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Start PostgreSQL container
+        run: docker-compose up -d
+
+      - name: Wait for PostgreSQL to be ready
+        run: |
+          until docker exec $(docker ps -q -f "name=medium-nest-prisma_db_1") pg_isready -U postgres; do
+            sleep 1
+          done
+
+      - name: Run database migrations
+        run: yarn migrate:dev
+
+      - name: Start the application
+        run: yarn start &
+        env:
+          DATABASE_URL: postgres://postgres:postgres@localhost:5432/mydatabase
+
+      - name: Wait for application to be ready
+        run: npx wait-on http://localhost:3333
+
+      - name: Run Cypress tests
+        run: npx cypress run
+        env:
+          CYPRESS_BASE_URL: http://localhost:3333
+          CYPRESS_PREFIX: test-local
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          GITHUB_TOKEN: ${{ secrets.CYPRESS_GITHUB_TOKEN }}
