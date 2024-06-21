@@ -8,6 +8,8 @@ on:
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
+    environment: production  # Specify the environment to use
+
     strategy:
       fail-fast: false
       matrix:
@@ -31,7 +33,7 @@ jobs:
           record: true
           parallel: true
         env:
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          CYPRESS_RECORD_KEY: ${{ secrets.PRODUCTION.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CYPRESS_BASE_URL: https://api.realworld.io/api
           CYPRESS_PREFIX: test-prod
