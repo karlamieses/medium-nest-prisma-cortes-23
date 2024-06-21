@@ -8,23 +8,23 @@ on:
     branches:
       - '*'
 
-env:
-  DATABASE_URL: postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}
-  CYPRESS_BASE_URL: http://localhost:3333
-
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
 
-    environment: CYPRESS_RECORD_KEY
+    environment: your-environment-name
 
     services:
       db:
         image: postgres:latest
         ports:
           - 5432:5432
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: mydatabase
         options: >-
-          --health-cmd "pg_isready -U ${{ secrets.POSTGRES_USER }}" 
+          --health-cmd "pg_isready -U postgres" 
           --health-interval 10s 
           --health-timeout 5s 
           --health-retries 5
@@ -43,7 +43,7 @@ jobs:
 
       - name: Wait for PostgreSQL to be ready
         run: |
-          until docker exec $(docker ps -q -f "name=db") pg_isready -U ${{ secrets.POSTGRES_USER }}; do
+          until docker exec $(docker ps -q -f "name=db") pg_isready -U postgres; do
             echo "Waiting for PostgreSQL to be ready..."
             sleep 1
           done
@@ -51,12 +51,12 @@ jobs:
       - name: Run database migrations
         run: yarn migrate:dev
         env:
-          DATABASE_URL: ${{ env.DATABASE_URL }}
+          DATABASE_URL: postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}
 
       - name: Start the application
         run: yarn start &
         env:
-          DATABASE_URL: ${{ env.DATABASE_URL }}
+          DATABASE_URL: postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}
 
       - name: Wait for application to be ready
         run: npx wait-on http://localhost:3333
@@ -64,7 +64,7 @@ jobs:
       - name: Run Cypress tests
         run: npx cypress run
         env:
-          CYPRESS_BASE_URL: ${{ env.CYPRESS_BASE_URL }}
+          CYPRESS_BASE_URL: http://localhost:3333
           CYPRESS_PREFIX: test-local
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.CYPRESS_GITHUB_TOKEN }}
