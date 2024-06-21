@@ -12,19 +12,13 @@ jobs:
   cypress-run:
     runs-on: ubuntu-latest
 
-    environment: your-environment-name
-
     services:
       db:
         image: postgres:latest
         ports:
           - 5432:5432
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: mydatabase
         options: >-
-          --health-cmd "pg_isready -U postgres" 
+          --health-cmd "pg_isready -U ${{ secrets.POSTGRES_USER }}" 
           --health-interval 10s 
           --health-timeout 5s 
           --health-retries 5
@@ -41,6 +35,9 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: Copy .env.dev to .env
+        run: cp .env.dev .env
+
       - name: Wait for PostgreSQL to be ready
         run: |
           until pg_isready -h localhost -p 5432 -U postgres; do
@@ -49,7 +46,7 @@ jobs:
           done
 
       - name: Run database migrations
-        run: yarn migrate:dev
+        run: npx prisma migrate deploy
         env:
           DATABASE_URL: postgres://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}
 
