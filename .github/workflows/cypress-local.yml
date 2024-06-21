@@ -8,10 +8,6 @@ on:
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        containers: [1, 2]
 
     services:
       db:
@@ -70,7 +66,7 @@ jobs:
           record: true
           parallel: true
         env:
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          CYPRESS_RECORD_KEY: ${{ vars.CYPRESS_RECORD_KEY }}
           CYPRESS_BASE_URL: http://localhost:3333
           CYPRESS_PREFIX: test-local
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ vars.GITHUB_TOKEN }}
