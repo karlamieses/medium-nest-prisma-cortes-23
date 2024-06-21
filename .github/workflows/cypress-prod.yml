@@ -31,7 +31,7 @@ jobs:
         uses: cypress-io/github-action@v4
         with:
           browser: chrome
-          run: yarn cypress run
+          run: npx cypress run
           record: true
           parallel: true
         env:
